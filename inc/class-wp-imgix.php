@@ -5,8 +5,24 @@ class WP_Imgix {
 	private $key = '';
 	private $url_base = 'https://i.embed.ly/1/display/';
 
-	public function __construct( $key ) {
+	protected static $instance;
+
+	public function __construct( $key = WP_IMGIX_KEY ) {
 		$this->key = $key;
+	}
+
+	public static function get_instance() {
+		if ( empty( self::$instance ) ) {
+			self::$instance = new self;
+		}
+		return self::$instance;
+	}
+
+	/**
+	 * Disable WordPress generating images for all the additional sizes, as we don't need that thang no more!
+	 */
+	public function wp_intermediate_sites() {
+		return array();
 	}
 
 	public function filter_image_downsize( $false, $attachment_id, $size ) {
