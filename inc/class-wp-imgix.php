@@ -53,7 +53,7 @@ class WP_Imgix {
 		$url = add_query_arg( array(
 			'url' => urlencode( $src ),
 			'width' => ! empty( $size['width'] ) ? $size['width'] : '',
-			'height' => ! empty( $size['width'] ) ? $size['height'] : '',
+			'height' => ! empty( $size['height'] ) ? $size['height'] : '',
 			'key' => $this->key
 		), $url );
 
