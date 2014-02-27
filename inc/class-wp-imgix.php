@@ -28,19 +28,22 @@ class WP_Imgix {
 	public function filter_image_downsize( $false, $attachment_id, $size ) {
 
 		$size = $this->parse_size( $size );
-		$url = $this->build_image_url( wp_get_attachment_url( $attachment_id ), $size );
+		$url = $this->get_thumbnail_url( wp_get_attachment_url( $attachment_id ), $size );
 
 		return array( $url, 0, 0 );
 	}
 
 	/**
-	 * Build an image url for the resizes image
+	 * Get a thumbnail URL for a given image
 	 *
-	 * @param string $src
-	 * @param array $size
+	 * @param string $src Image URL
+	 * @param array $size {
+	 *     @type string $width
+	 *     @type string $height
+	 * }
 	 * @return string
 	 */
-	private function build_image_url( $src, $size ) {
+	public function get_thumbnail_url( $src, $size ) {
 
 		$url = $this->url_base;
 
