@@ -30,7 +30,11 @@ class WP_Imgix {
 		$size = $this->parse_size( $size );
 		$url = $this->get_thumbnail_url( wp_get_attachment_url( $attachment_id ), $size );
 
-		return array( $url, 0, 0 );
+		return array(
+			$url,
+			$size['crop'] ? $size['width'] : 0,
+			$size['crop'] ? $size['height'] : 0
+		);
 	}
 
 	/**
@@ -72,32 +76,50 @@ class WP_Imgix {
 	private function parse_size( $size ) {
 
 		global $_wp_additional_image_sizes;
-
+		$new_size = array( 'width' => 0, 'height' => 0, 'crop' => false );
 
 		if ( is_string( $size ) && strpos( $size, '=' ) ) {
 			$size = wp_parse_args( $size );
 		}
 
-		if ( is_string( $size ) && isset( $_wp_additional_image_sizes[$size] ) ) {
-			$size = $_wp_additional_image_sizes[$size];
+		if ( isset( $size['width'] ) ) {
+			$new_size['width'] = $size['width'];
+		}
+
+		if ( isset( $size['height'] ) ) {
+			$new_size['height'] = $size['height'];
+		}
+
+		if ( isset( $size['crop'] ) ) {
+			$new_size['crop'] = $size['crop'];
+		}
+
+		if ( is_string( $size ) ) {
+
+			if ( isset( $_wp_additional_image_sizes[ $size ] ) ) {
+				$new_size['width']  = intval( $_wp_additional_image_sizes[ $size ]['width'] );
+				$new_size['height'] = intval( $_wp_additional_image_sizes[ $size ]['height'] );
+				$new_size['crop']   = (bool) $_wp_additional_image_sizes[ $size ]['crop'];
+			} else {
+				$new_size['height'] = get_option( "{$size}_size_h" );
+				$new_size['width']  = get_option( "{$size}_size_w" );
+				$new_size['crop']   = get_option( "{$size}_crop" );
+			}
 		}
 
 		if ( is_array( $size ) && isset( $size[0] ) ) {
 
-			$size['width'] = $size[0];
-			unset( $size[0] );
+			$new_size['width'] = $size[0];
 
 			if ( isset( $size[1] ) ) {
-				$size['height'] = $size[1];
-				unset( $size[1] );
+				$new_size['height'] = $size[1];
 			}
 
 			if ( isset( $size[2] ) ) {
-				$size['crop'] = $size[2];
-				unset( $size[2] );
+				$new_size['crop'] = $size[2];
 			}
 		}
 
-		return $size;
+		return $new_size;
 	}
 }
