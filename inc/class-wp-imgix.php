@@ -21,7 +21,7 @@ class WP_Imgix {
 	/**
 	 * Disable WordPress generating images for all the additional sizes, as we don't need that thang no more!
 	 */
-	public function wp_intermediate_sites() {
+	public function wp_intermediate_sizes() {
 		return array();
 	}
 
