@@ -3,12 +3,13 @@
 class WP_Imgix {
 
 	private $key = '';
-	private $url_base = 'https://i.embed.ly/1/display/';
+	private $domain = '';
 
 	protected static $instance;
 
-	public function __construct( $key = WP_IMGIX_KEY ) {
+	public function __construct( $domain = WP_IMGIX_DOMAIN, $key = WP_IMGIX_KEY ) {
 		$this->key = $key;
+		$this->domain = $domain;
 	}
 
 	public static function get_instance() {
@@ -49,19 +50,14 @@ class WP_Imgix {
 	 */
 	public function get_thumbnail_url( $src, $size ) {
 
-		$url = $this->url_base;
+		$src = parse_url( $src );
 
-		if ( ! empty( $size['crop'] ) ) {
-			$url .= 'crop/';
-		} else {
-			$url .= 'resize/';
-		}
+		$url = '//' . $this->domain . $src['path'];
 
 		$url = add_query_arg( array(
-			'url' => urlencode( $src ),
-			'width' => ! empty( $size['width'] ) ? $size['width'] : '',
-			'height' => ! empty( $size['height'] ) ? $size['height'] : '',
-			'key' => $this->key
+			'w' => ! empty( $size['width'] ) ? $size['width'] : '',
+			'h' => ! empty( $size['height'] ) ? $size['height'] : '',
+			'fit' => $size['crop'] ? 'crop' : ''
 		), $url );
 
 		return $url;
