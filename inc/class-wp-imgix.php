@@ -2,13 +2,11 @@
 
 class WP_Imgix {
 
-	private $key = '';
 	private $domain = '';
 
 	protected static $instance;
 
-	public function __construct( $domain = WP_IMGIX_DOMAIN, $key = WP_IMGIX_KEY ) {
-		$this->key = $key;
+	public function __construct( $domain = WP_IMGIX_DOMAIN ) {
 		$this->domain = $domain;
 	}
 
