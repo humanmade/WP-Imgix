@@ -28,13 +28,17 @@ class WP_Imgix {
 
 	public function filter_image_downsize( $false, $attachment_id, $size ) {
 
+		$meta = wp_get_attachment_metadata( $attachment_id );
 		$size = $this->parse_size( $size );
-		$url = $this->get_thumbnail_url( wp_get_attachment_url( $attachment_id ), $size );
+		$url  = $this->get_thumbnail_url( wp_get_attachment_url( $attachment_id ), $size );
+
+		$new_size = $size['crop'] == false ? wp_constrain_dimensions( $meta['width'], $meta['height'], $size['width'], $size['height'] ) : array( $size['width'], $size['height'] );
 
 		return array(
 			$url,
-			$size['crop'] ? $size['width'] : 0,
-			$size['crop'] ? $size['height'] : 0
+			$new_size[0],
+			$new_size[1],
+			true
 		);
 	}
 
@@ -54,11 +58,17 @@ class WP_Imgix {
 
 		$url = '//' . $this->domain . $src['path'];
 
-		$url = add_query_arg( array(
-			'w' => ! empty( $size['width'] ) ? $size['width'] : '',
-			'h' => ! empty( $size['height'] ) ? $size['height'] : '',
-			'fit' => $size['crop'] ? 'crop' : ''
-		), $url );
+		if ( ! empty( $size['width'] ) ) {
+			$url = add_query_arg( 'w', $size['width'], $url );
+		}
+
+		if ( ! empty( $size['height'] ) ) {
+			$url = add_query_arg( 'h', $size['height'], $url );
+		}
+
+		if ( ! empty( $size['width'] ) || ! empty( $size['height'] ) ) {
+			$url = add_query_arg( 'fit', $size['crop'] ? 'crop' : 'max', $url );
+		}
 
 		return $url;
 	}
