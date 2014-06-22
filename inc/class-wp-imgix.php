@@ -2,12 +2,12 @@
 
 class WP_Imgix {
 
-	private $domain = '';
+	private $uploads_url = '';
 
 	protected static $instance;
 
-	public function __construct( $domain = WP_IMGIX_DOMAIN ) {
-		$this->domain = $domain;
+	public function __construct( $uploads_url = WP_IMGIX_UPLOADS_URL ) {
+		$this->uploads_url = $uploads_url;
 	}
 
 	public static function get_instance() {
@@ -52,9 +52,8 @@ class WP_Imgix {
 	 */
 	public function get_thumbnail_url( $src, $size ) {
 
-		$src = parse_url( $src );
-
-		$url = '//' . $this->domain . $src['path'];
+		$upload_dir = wp_upload_dir();
+		$url = str_replace( $upload_dir['baseurl'], $this->uploads_url,	$src );
 
 		if ( ! empty( $size['width'] ) ) {
 			$url = add_query_arg( 'w', $size['width'], $url );
