@@ -53,7 +53,12 @@ class WP_Imgix {
 	public function get_thumbnail_url( $src, $size ) {
 
 		$upload_dir = wp_upload_dir();
-		$url = str_replace( $upload_dir['baseurl'], $this->uploads_url,	$src );
+
+		if ( is_multisite() ) {
+				$upload_dir['baseurl'] = preg_replace( '#/sites/\d+$#', '', $upload_dir['baseurl'] );
+		}
+
+		$url = str_replace( $upload_dir['baseurl'], $this->uploads_url, $src );
 
 		if ( ! empty( $size['width'] ) ) {
 			$url = add_query_arg( 'w', $size['width'], $url );

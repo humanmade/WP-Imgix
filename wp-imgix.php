@@ -5,7 +5,7 @@
  * Author: Human Made Limited
  */
 
-if ( ! defined( 'WP_IMGIX_DOMAIN' ) ) {
+if ( ! defined( 'WP_IMGIX_UPLOADS_URL' ) ) {
 	return;
 }
 
