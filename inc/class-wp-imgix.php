@@ -30,7 +30,20 @@ class WP_Imgix {
 		$size = $this->parse_size( $size );
 		$url  = $this->get_thumbnail_url( wp_get_attachment_url( $attachment_id ), $size );
 
-		$new_size = $size['crop'] == false ? wp_constrain_dimensions( $meta['width'], $meta['height'], $size['width'], $size['height'] ) : array( $size['width'], $size['height'] );
+		if ( $size['crop'] == false ) {
+			$new_size = wp_constrain_dimensions(
+				$meta['width'],
+				$meta['height'],
+				isset( $size['width'] )  ? $size['width']  : 0,
+				isset( $size['height'] ) ? $size['height'] : 0
+			);
+		}
+		else {
+			$new_size = array(
+				isset( $size['width'] )  ? $size['width']  : 0,
+				isset( $size['height'] ) ? $size['height'] : 0
+			);
+		}
 
 		return array(
 			$url,
