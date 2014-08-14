@@ -40,8 +40,8 @@ class WP_Imgix {
 		}
 		else {
 			$new_size = array(
-				isset( $size['width'] )  ? $size['width']  : 0,
-				isset( $size['height'] ) ? $size['height'] : 0
+				isset( $size['width'] )  ? $size['width']  : false,
+				isset( $size['height'] ) ? $size['height'] : false
 			);
 		}
 
