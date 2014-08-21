@@ -30,15 +30,14 @@ class WP_Imgix {
 		$size = $this->parse_size( $size );
 		$url  = $this->get_thumbnail_url( wp_get_attachment_url( $attachment_id ), $size );
 
-		if ( $size['crop'] == false ) {
+		if ( $size['crop'] == false && $meta ) {
 			$new_size = wp_constrain_dimensions(
 				$meta['width'],
 				$meta['height'],
 				isset( $size['width'] )  ? $size['width']  : 0,
 				isset( $size['height'] ) ? $size['height'] : 0
 			);
-		}
-		else {
+		} else {
 			$new_size = array(
 				isset( $size['width'] )  ? $size['width']  : false,
 				isset( $size['height'] ) ? $size['height'] : false
