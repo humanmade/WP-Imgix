@@ -64,6 +64,8 @@ class WP_Imgix {
 	 */
 	public function get_thumbnail_url( $src, $size ) {
 
+		$size = $this->parse_size( $size );
+		
 		$upload_dir = wp_upload_dir();
 
 		if ( is_multisite() ) {
