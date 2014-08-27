@@ -86,6 +86,10 @@ class WP_Imgix {
 			$url = add_query_arg( 'fit', $size['crop'] ? 'crop' : 'max', $url );
 		}
 
+		if ( define( 'WP_IMGIX_AUTO_FORMAT' ) && WP_IMGIX_AUTO_FORMAT ) {
+			$url = add_query_arg( 'auto', 'format', $url );
+		}
+
 		return $url;
 	}
 
