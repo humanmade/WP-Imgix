@@ -83,7 +83,16 @@ class WP_Imgix {
 		}
 
 		if ( ! empty( $size['width'] ) || ! empty( $size['height'] ) ) {
-			$url = add_query_arg( 'fit', $size['crop'] ? 'crop' : 'max', $url );
+
+			if ( ! empty( $size['crop'] ) ) {
+				$fit = 'crop';
+			} else if ( isset( $size['fit'] ) ) {
+				$fit = $size['fit'];
+			} else {
+				$fit = 'max';
+			}
+
+			$url = add_query_arg( 'fit', $fit, $url );
 		}
 
 		if ( defined( 'WP_IMGIX_AUTO_FORMAT' ) && WP_IMGIX_AUTO_FORMAT ) {
@@ -100,6 +109,12 @@ class WP_Imgix {
 	 * @return array
 	 */
 	private function parse_size( $size ) {
+
+		if ( is_array( $size ) && ( isset( $size['width'] ) || isset( $size['height']  ) ) ) {
+			return wp_parse_args( $size, array(
+				'crop' => false
+			) );
+		}
 
 		global $_wp_additional_image_sizes;
 		$new_size = array( 'width' => 0, 'height' => 0, 'crop' => false );
